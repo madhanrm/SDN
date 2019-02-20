@@ -36,29 +36,6 @@ function CopyFiles()
     cp $BaseDir\net-conf.json C:\etc\kube-flannel\net-conf.json
 }
 
-function DownloadFlannelBinaries()
-{
-    Write-Host "Downloading Flannel binaries"
-    DownloadFile -Url  "https://github.com/coreos/flannel/releases/download/v0.11.0/flanneld.exe" -Destination $BaseDir\flanneld.exe 
-}
-
-function DownloadCniBinaries($NetworkMode)
-{
-    Write-Host "Downloading CNI binaries"
-    DownloadFile -Url  "https://github.com/$GithubSDNRepository/raw/master/Kubernetes/flannel/$NetworkMode/net-conf.json" -Destination $BaseDir\net-conf.json
-    DownloadFile -Url "https://github.com/$GithubSDNRepository/raw/master/Kubernetes/flannel/$NetworkMode/cni/config/cni.conf" -Destination $BaseDir\cni\config\cni.conf
-    DownloadFile -Url  "https://github.com/$GithubSDNRepository/raw/master/Kubernetes/flannel/l2bridge/cni/flannel.exe" -Destination $BaseDir\cni\flannel.exe
-    DownloadFile -Url  "https://github.com/$GithubSDNRepository/raw/master/Kubernetes/flannel/l2bridge/cni/host-local.exe" -Destination $BaseDir\cni\host-local.exe
-
-    if ($NetworkMode -eq "l2bridge")
-    {
-        DownloadFile -Url  "https://github.com/$GithubSDNRepository/raw/master/Kubernetes/flannel/l2bridge/cni/win-bridge.exe" -Destination $BaseDir\cni\win-bridge.exe
-    }
-    elseif ($NetworkMode -eq "overlay"){
-        DownloadFile -Url  "https://github.com/$GithubSDNRepository/raw/master/Kubernetes/flannel/overlay/cni/win-overlay.exe" -Destination $BaseDir\cni\win-overlay.exe
-    }
-}
-
 function DownloadWindowsKubernetesScripts
 {
     Write-Host "Downloading Windows Kubernetes scripts"

@@ -43,7 +43,6 @@ powershell $install -NetworkMode $NetworkMode -clusterCIDR $ClusterCIDR -KubeDns
 
 # Register node
 powershell $BaseDir\start-kubelet.ps1 -RegisterOnly -NetworkMode $NetworkMode
-ipmo C:\k\hns.psm1
 
 # Start Infra services
 # Start Flanneld

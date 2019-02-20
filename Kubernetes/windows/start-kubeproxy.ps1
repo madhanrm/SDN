@@ -1,10 +1,18 @@
 Param(
-    [parameter(Mandatory = $false)] $LogDir = "C:\k",    
-    $NetworkName = "cbr0"
+    $NetworkName = "cbr0",
+    [parameter(Mandatory = $false)] $BaseDir = "C:\k",
+    [parameter(Mandatory = $false)] $clusterCIDR="192.168.0.0/16",
+    [parameter(Mandatory = $false)] $ProxyFeatureGates = ""
 )
 
-$networkName = $NetworkName.ToLower()
-ipmo c:\k\hns.psm1
-Get-HnsPolicyList | Remove-HnsPolicyList
+$helper = [io.Path]::Join($Global:BaseDir, "helper.psm1")
+ipmo $helper
 
-c:\k\kube-proxy.exe --v=4 --proxy-mode=kernelspace --feature-gates="WinDSR=false" --hostname-override=$(hostname) --kubeconfig=c:\k\config --network=$networkName --enable-dsr=false --log-dir=$LogDir --logtostderr=false
+CleanupPolicyList
+
+$networkName = $NetworkName.ToLower()
+
+$featureGates = "WinDSR=false"
+StartKubeProxy -KubeConfig $(GetKubeConfig) `
+            -NetworkName $networkName -ClusterCIDR  $clusterCIDR `
+            -ProxyFeatureGates $featureGates -IsDsr:$IsDsr.IsPresent
