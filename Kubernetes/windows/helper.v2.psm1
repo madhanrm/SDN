@@ -1059,7 +1059,7 @@ function UninstallDockerD()
     Remove-Item $env:ProgramFiles\Docker
     # For persistent use after a reboot
     $existingMachinePath = [Environment]::GetEnvironmentVariable("Path",[System.EnvironmentVariableTarget]::Machine)
-    $existingMachinePath = $existingMachinePath.Replace("$env:ProgramFiles\Docker;", "")
+    $existingMachinePath = $existingMachinePath.Replace($env:ProgramFiles+ '\Docker;', "")
     [Environment]::SetEnvironmentVariable("Path", $existingMachinePath, [EnvironmentVariableTarget]::Machine)
 
 }
@@ -1136,7 +1136,7 @@ function UninstallKubernetesBinaries()
 
     # For current shell Path update
     $existingPath = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
-    $existingPath = $existingPath.Replace("$DestinationPath\kubernetes\node\bin;", "")
+    $existingPath = $existingPath.Replace($DestinationPath+'\kubernetes\node\bin;', "")
     # For Persistent across reboot
     [Environment]::SetEnvironmentVariable("Path", $existingPath, [EnvironmentVariableTarget]::Machine)
     Remove-Item $DestinationPath -Force -ErrorAction SilentlyContinue
