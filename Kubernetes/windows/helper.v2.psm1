@@ -330,7 +330,6 @@ function InstallFlannelD()
     CreateDirectory $(GetKubeFlannelPath)
     copy $Global:BaseDir\net-conf.json $(GetKubeFlannelPath)
 
-    #[Environment]::SetEnvironmentVariable("NODE_NAME", (hostname).ToLower())
     $flanneldArgs = @(
         "$Destination\flanneld.exe",
         "--kubeconfig-file=$(GetKubeConfig)",
@@ -1058,6 +1057,11 @@ function UninstallDockerD()
 {
     RemoveService Docker
     Remove-Item $env:ProgramFiles\Docker
+    # For persistent use after a reboot
+    $existingMachinePath = [Environment]::GetEnvironmentVariable("Path",[System.EnvironmentVariableTarget]::Machine)
+    $existingMachinePath = $existingMachinePath.Replace("$env:ProgramFiles\Docker;", "")
+    [Environment]::SetEnvironmentVariable("Path", $existingMachinePath, [EnvironmentVariableTarget]::Machine)
+
 }
 
 function InstallDockerImages()
@@ -1113,7 +1117,7 @@ function InstallKubernetesBinaries()
     $existingPath = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
 
     # For current shell Path update
-    $env:path += ";;$DestinationPath\kubernetes\node\bin"
+    $env:path += ";$DestinationPath\kubernetes\node\bin"
     # For Persistent across reboot
     [Environment]::SetEnvironmentVariable("Path", $existingPath + ";$DestinationPath\kubernetes\node\bin", [EnvironmentVariableTarget]::Machine)
 
@@ -1131,6 +1135,12 @@ function UninstallKubernetesBinaries()
     Remove-Item $DestinationPath -Force
     # $existingPath = [Environment]::GetEnvironmentVariable("Path",[System.EnvironmentVariableTarget]::Machine)
     Remove-Item Env:\KUBECONFIG -ErrorAction SilentlyContinue
+
+    # For current shell Path update
+    $existingPath = [Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
+    $existingPath = $existingPath.Replace("$DestinationPath\kubernetes\node\bin;", "")
+    # For Persistent across reboot
+    [Environment]::SetEnvironmentVariable("Path", $existingPath, [EnvironmentVariableTarget]::Machine)
 }
 
 function DownloadWinCniBinaries()
@@ -1215,6 +1225,7 @@ function InstallCRI($cri)
             # Setup Docker
             InstallDockerD
             InstallDockerImages
+            InstallPauseImage
             break
         }
 
