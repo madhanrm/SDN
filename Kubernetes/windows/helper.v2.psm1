@@ -1342,3 +1342,5 @@ Export-ModuleMember HasKubeadmConfig
 Export-ModuleMember WriteKubeadmConfig
 Export-ModuleMember ReadKubeadmConfig
 Export-ModuleMember RemoveExternalNetwork
+Export-ModuleMember GetKubeNodes
+Export-ModuleMember RemoveKubeNodes
