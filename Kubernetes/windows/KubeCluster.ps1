@@ -266,6 +266,7 @@ elseif ($Reset.IsPresent)
     UninstallKubeProxy
     UninstallKubelet
     UninstallKubernetesBinaries -Destination  $Destination
+    UninstallCRI $Cri
     Remove-Item $Destination -ErrorAction SilentlyContinue
     Remove-Item $env:HOMEDRIVE\$env:HOMEPATH\.kube -ErrorAction SilentlyContinue
 }

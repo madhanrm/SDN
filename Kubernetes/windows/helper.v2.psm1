@@ -1132,8 +1132,6 @@ function UninstallKubernetesBinaries()
     Param(
     $DestinationPath
     ) 
-    Remove-Item $DestinationPath -Force
-    # $existingPath = [Environment]::GetEnvironmentVariable("Path",[System.EnvironmentVariableTarget]::Machine)
     Remove-Item Env:\KUBECONFIG -ErrorAction SilentlyContinue
 
     # For current shell Path update
@@ -1141,6 +1139,7 @@ function UninstallKubernetesBinaries()
     $existingPath = $existingPath.Replace("$DestinationPath\kubernetes\node\bin;", "")
     # For Persistent across reboot
     [Environment]::SetEnvironmentVariable("Path", $existingPath, [EnvironmentVariableTarget]::Machine)
+    Remove-Item $DestinationPath -Force -ErrorAction SilentlyContinue
 }
 
 function DownloadWinCniBinaries()
