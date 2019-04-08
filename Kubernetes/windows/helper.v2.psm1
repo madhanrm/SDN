@@ -844,7 +844,7 @@ function CreateService()
     ++++++++++++++++++++++++++++++++
     Service [$ServiceName]
     Cmdline [$binary] 
-    Env     [$EnvVaribles | fl *]
+    Env     [$($EnvVaribles | ConvertTo-Json -Depth 10)]
     Log     [$LogFile]
     ++++++++++++++++++++++++++++++++
 "@
@@ -1181,6 +1181,15 @@ function GetKubeDnsServiceIp()
     $svc.Items | foreach { $i = $_; if ($i.Metadata.Name -match "dns") { return $i.spec.ClusterIP } }
 }
 
+function GetKubeNodes()
+{
+    kubectl.exe get nodes
+}
+
+function RemoveKubeNode()
+{
+    kubectl.exe delete (hostname).ToLower()
+}
 
 function GetClusterCidr()
 {

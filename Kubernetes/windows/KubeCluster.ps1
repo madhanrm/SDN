@@ -238,6 +238,9 @@ if ($Join.IsPresent)
                 -IsDsr:$IsDsr.IsPresent
     }
     StartKubeproxy
+
+    GetKubeNodes
+    Write-Host "Node $(hostname) successfully joined the cluster"
 }
 # Handle -Reset
 elseif ($Reset.IsPresent)
@@ -255,6 +258,7 @@ elseif ($Reset.IsPresent)
             $Global:NetworkMode = $Global:Configuration["NetworkMode"]
         }
     }
+    RemoveKubeNode
     # Initiate cleanup
     CleanupOldNetwork $Global:NetworkName
     RemoveExternalNetwork
